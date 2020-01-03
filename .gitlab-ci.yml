@@ -6,20 +6,39 @@ variables:
 build:
   stage: build
   script:
-    # Install dependencies
-    - pip3 install -U pytest colcon-common-extensions colcon-test-result
+    # Clone dependency packages not installable
+    - cd ${CI_BUILDS_DIR}/src
+    - git clone --single-branch --branch master https://github.com/ros2/common_interfaces.git
+    - git clone --single-branch --branch yuv422-yuy2 https://github.com/sgvandijk/vision_opencv.git
     - cd ${CI_BUILDS_DIR}
+    # Install other dependencies
     - apt-get update && rosdep update && rosdep install --from-paths src -r -y
     # Build
-    - colcon build --cmake-args -DCMAKE_BUILD_TYPE=Debug
-    # Test
+    - colcon build --cmake-args -DCMAKE_BUILD_TYPE=Debug --packages-up-to v4l2_camera
+    # Move artifact directories so they can be uploaded
+    - mv build src/ros2_v4l2_camera/build
+    - mv install src/ros2_v4l2_camera/install
+  artifacts:
+    paths:
+      - build/
+      - install/
+    expire_in: 10 mins
+
+test:
+  stage: test
+  script:
+    - cd $CI_BUILDS_DIR
+    # Move downloaded artifacts back in place
+    - mv src/ros2_v4l2_camera/build build
+    - mv src/ros2_v4l2_camera/install install
+    # Run tests
     - colcon test --event-handlers console_cohesion+ --packages-select v4l2_camera
     # Move artifact directories so they can be uploaded
-    - cp -r build src/ros2_v4l2_camera/build
-    - cp -r install src/ros2_v4l2_camera/install
+    - mv build src/ros2_v4l2_camera/build
+    - mv install src/ros2_v4l2_camera/install
     # Summarize tests and fail on test failures
     - colcon test-result
   artifacts:
     reports:
-      junit: build/v4l2_camera/test_results/v4l2_camera/*.xunit.xml
-
+      junit:
+      - build/v4l2_camera/test_results/v4l2_camera/*.xunit.xml
