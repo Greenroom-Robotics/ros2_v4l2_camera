@@ -4,17 +4,6 @@ A ROS 2 camera driver using Video4Linux2 (V4L2).
 
 ## Dependencies
 
-* `image_transport` - makes it possible to set up compressed transport
-  of the images, as described below.
-
-    The ROS 2 port of `image_transport` in the `image_common`
-    repository is needed inside of your workspace:
-
-        git clone --branch ros2 https://github.com/ros-perception/image_common.git src/image_common
-
-    Note that `image_transport` only supports raw transport by default
-    and needs additional plugins to actually provide compression; see
-    below how to do this.
 
 ## Nodes
 
