@@ -9,7 +9,7 @@ need new features in them that have not been released yet:
 
 * `common_interfaces` - USB cameras mostly use the YUY2 format, which
   historically hasn't been supported in ROS. Support has [landed
-  recently)[https://github.com/ros2/common_interfaces/pull/78], but
+  recently](https://github.com/ros2/common_interfaces/pull/78), but
   has not been released yet, so you need to clone master into your
   workspace:
 
