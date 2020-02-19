@@ -203,7 +203,7 @@ Image::UniquePtr V4l2CameraDevice::capture()
   img->height = cur_data_format_.height;
   img->step = cur_data_format_.bytesPerLine;
   if (cur_data_format_.pixelFormat == V4L2_PIX_FMT_YUYV) {
-    img->encoding = sensor_msgs::image_encodings::YUV422;
+    img->encoding = sensor_msgs::image_encodings::YUV422_YUY2;
   } else {
     RCLCPP_WARN(rclcpp::get_logger("v4l2_camera"), "Current pixel format is not supported yet");
   }
