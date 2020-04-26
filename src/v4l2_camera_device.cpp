@@ -33,6 +33,8 @@
 using v4l2_camera::V4l2CameraDevice;
 using sensor_msgs::msg::Image;
 
+#define IOCTL_FAILED(x) (-1 == x)
+
 V4l2CameraDevice::V4l2CameraDevice(std::string device)
 : device_{std::move(device)}
 {
@@ -118,7 +120,7 @@ bool V4l2CameraDevice::start()
     buf.memory = V4L2_MEMORY_MMAP;
     buf.index = buffer.index;
 
-    if (-1 == ioctl(fd_, VIDIOC_QBUF, &buf)) {
+    if (IOCTL_FAILED(ioctl(fd_, VIDIOC_QBUF, &buf))) {
       RCLCPP_ERROR(rclcpp::get_logger("v4l2_camera"),
         std::string{"Buffer failure on capture start: "} +
         strerror(errno) + " (" + std::to_string(errno) + ")");
@@ -128,7 +130,7 @@ bool V4l2CameraDevice::start()
 
   // Start stream
   unsigned type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-  if (-1 == ioctl(fd_, VIDIOC_STREAMON, &type)) {
+  if (IOCTL_FAILED(ioctl(fd_, VIDIOC_STREAMON, &type))) {
     RCLCPP_ERROR(rclcpp::get_logger("v4l2_camera"),
       std::string{"Failed stream start: "} +
       strerror(errno) + " (" + std::to_string(errno) + ")");
@@ -142,7 +144,7 @@ bool V4l2CameraDevice::stop()
   RCLCPP_INFO(rclcpp::get_logger("v4l2_camera"), "Stopping camera");
   // Stop stream
   unsigned type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-  if (-1 == ioctl(fd_, VIDIOC_STREAMOFF, &type)) {
+  if (IOCTL_FAILED(ioctl(fd_, VIDIOC_STREAMOFF, &type))) {
     RCLCPP_ERROR(rclcpp::get_logger("v4l2_camera"),
       std::string{"Failed stream stop"});
     return false;
@@ -182,7 +184,7 @@ Image::UniquePtr V4l2CameraDevice::capture()
   buf.memory = V4L2_MEMORY_MMAP;
 
   // Dequeue buffer with new image
-  if (-1 == ioctl(fd_, VIDIOC_DQBUF, &buf)) {
+  if (IOCTL_FAILED(ioctl(fd_, VIDIOC_DQBUF, &buf))) {
     RCLCPP_ERROR(rclcpp::get_logger("v4l2_camera"),
       std::string{"Error dequeueing buffer: "} +
       strerror(errno) + " (" + std::to_string(errno) + ")");
@@ -190,7 +192,7 @@ Image::UniquePtr V4l2CameraDevice::capture()
   }
 
   // Requeue buffer to be reused for new captures
-  if (-1 == ioctl(fd_, VIDIOC_QBUF, &buf)) {
+  if (IOCTL_FAILED(ioctl(fd_, VIDIOC_QBUF, &buf))) {
     RCLCPP_ERROR(rclcpp::get_logger("v4l2_camera"),
       std::string{"Error re-queueing buffer: "} +
       strerror(errno) + " (" + std::to_string(errno) + ")");
@@ -218,7 +220,7 @@ int32_t V4l2CameraDevice::getControlValue(uint32_t id)
 {
   auto ctrl = v4l2_control{};
   ctrl.id = id;
-  if (-1 == ioctl(fd_, VIDIOC_G_CTRL, &ctrl)) {
+  if (IOCTL_FAILED(ioctl(fd_, VIDIOC_G_CTRL, &ctrl))) {
     RCLCPP_ERROR(rclcpp::get_logger("v4l2_camera"),
       std::string{"Failed getting value for control "} + std::to_string(id) +
       ": " + strerror(errno) + " (" + std::to_string(errno) + "); returning 0!");
@@ -232,10 +234,10 @@ bool V4l2CameraDevice::setControlValue(uint32_t id, int32_t value)
   auto ctrl = v4l2_control{};
   ctrl.id = id;
   ctrl.value = value;
-  if (-1 == ioctl(fd_, VIDIOC_S_CTRL, &ctrl)) {
     auto control = std::find_if(
       controls_.begin(), controls_.end(),
       [id](Control const & c) {return c.id == id;});
+  if (IOCTL_FAILED(ioctl(fd_, VIDIOC_S_CTRL, &ctrl))) {
     RCLCPP_ERROR(rclcpp::get_logger("v4l2_camera"),
       std::string{"Failed setting value for control "} + control->name + " to " +
       std::to_string(value) +
@@ -257,7 +259,7 @@ bool V4l2CameraDevice::requestDataFormat(const PixelFormat & format)
     "Requesting format: " + std::to_string(format.width) + "x" + std::to_string(format.height));
 
   // Perform request
-  if (-1 == ioctl(fd_, VIDIOC_S_FMT, &formatReq)) {
+  if (IOCTL_FAILED(ioctl(fd_, VIDIOC_S_FMT, &formatReq))) {
     RCLCPP_ERROR(rclcpp::get_logger("v4l2_camera"),
       std::string{"Failed requesting pixel format"} +
       ": " + strerror(errno) + " (" + std::to_string(errno) + ")");
@@ -277,7 +279,7 @@ void V4l2CameraDevice::listImageFormats()
   fmtDesc.index = 0;
   fmtDesc.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
-  while (ioctl(fd_, VIDIOC_ENUM_FMT, &fmtDesc) == 0) {
+  while (!IOCTL_FAILED(ioctl(fd_, VIDIOC_ENUM_FMT, &fmtDesc))) {
     image_formats_.emplace_back(fmtDesc);
     fmtDesc.index++;
   }
@@ -290,7 +292,7 @@ void V4l2CameraDevice::listControls()
   auto queryctrl = v4l2_queryctrl{};
   queryctrl.id = V4L2_CID_USER_CLASS | V4L2_CTRL_FLAG_NEXT_CTRL;
 
-  while (ioctl(fd_, VIDIOC_QUERYCTRL, &queryctrl) == 0) {
+  while (!IOCTL_FAILED(ioctl(fd_, VIDIOC_QUERYCTRL, &queryctrl))) {
     // Ignore disabled controls
     if (queryctrl.flags & V4L2_CTRL_FLAG_DISABLED) {
       continue;
@@ -304,7 +306,7 @@ void V4l2CameraDevice::listControls()
       // Query all enum values
       for (auto i = queryctrl.minimum; i <= queryctrl.maximum; i++) {
         querymenu.index = i;
-        if (ioctl(fd_, VIDIOC_QUERYMENU, &querymenu) == 0) {
+        if (!IOCTL_FAILED(ioctl(fd_, VIDIOC_QUERYMENU, &querymenu))) {
           menuItems[i] = (const char *)querymenu.name;
         }
       }
