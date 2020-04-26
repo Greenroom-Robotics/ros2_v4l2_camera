@@ -57,6 +57,21 @@ struct Control
 
   /// Menu item names by index. Empty if this is not a menu control
   std::map<int, std::string> menuItems;
+
+  static std::string type_to_string(ControlType t)
+  {
+    switch (t) {
+      case ControlType::INT: return "INT";
+      case ControlType::BOOL: return "BOOL";
+      case ControlType::MENU: return "MENU";
+      case ControlType::BUTTON: return "BUTTON";
+      case ControlType::INT64: return "INT64";
+      case ControlType::CTRL_CLASS: return "CRTL_CLSS";
+      case ControlType::STRING: return "STRING";
+      case ControlType::BITMASK: return "BITMASK";
+    }
+    return "<unknown>";
+  }
 };
 
 }  // namespace v4l2_camera

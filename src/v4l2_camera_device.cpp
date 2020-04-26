@@ -99,8 +99,15 @@ bool V4l2CameraDevice::open()
   for (auto const & control : controls_) {
     RCLCPP_INFO(
       rclcpp::get_logger("v4l2_camera"),
-      "  " + control.name + " (" + std::to_string(static_cast<unsigned>(control.type)) + ") = " +
+      "  " + control.name + " (" + Control::type_to_string(control.type) + ") = " +
       std::to_string(getControlValue(control.id)));
+    if (control.type == ControlType::MENU) {
+      for (auto const & item : control.menuItems) {
+        RCLCPP_INFO(
+          rclcpp::get_logger("v4l2_camera"),
+          "    " + std::to_string(item.first) + " => " + item.second);
+      }
+    }
   }
 
   return true;
