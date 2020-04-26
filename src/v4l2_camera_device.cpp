@@ -238,12 +238,20 @@ int32_t V4l2CameraDevice::getControlValue(uint32_t id)
 
 bool V4l2CameraDevice::setControlValue(uint32_t id, int32_t value)
 {
+  auto control = std::find_if(
+    controls_.begin(), controls_.end(),
+    [id](Control const & c) {return c.id == id;});
+
   auto ctrl = v4l2_control{};
   ctrl.id = id;
+  // Check whether device supports setting control
+  if (IOCTL_FAILED(ioctl(fd_, VIDIOC_QUERYCTRL, &ctrl))) {
+    RCLCPP_ERROR(rclcpp::get_logger("v4l2_camera"),
+      std::string{"Device does not support setting value for control "} + control->name);
+    return false;
+  }
+
   ctrl.value = value;
-    auto control = std::find_if(
-      controls_.begin(), controls_.end(),
-      [id](Control const & c) {return c.id == id;});
   if (IOCTL_FAILED(ioctl(fd_, VIDIOC_S_CTRL, &ctrl))) {
     RCLCPP_ERROR(rclcpp::get_logger("v4l2_camera"),
       std::string{"Failed setting value for control "} + control->name + " to " +
