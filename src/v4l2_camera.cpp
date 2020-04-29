@@ -73,6 +73,9 @@ V4L2Camera::V4L2Camera(rclcpp::NodeOptions const & options)
         auto img = camera_->capture();
         auto stamp = now();
         if (img->encoding != output_encoding_) {
+          RCLCPP_WARN_ONCE(get_logger(),
+            "Image encoding not same as requested output, converting: " +
+            img->encoding + " => " + output_encoding_);
           img = convert(*img);
         }
         img->header.stamp = stamp;
