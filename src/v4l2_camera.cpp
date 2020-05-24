@@ -79,6 +79,7 @@ V4L2Camera::V4L2Camera(rclcpp::NodeOptions const & options)
           img = convert(*img);
         }
         img->header.stamp = stamp;
+        img->header.frame_id = camera_frame_id_;
 
         if (get_node_options().use_intra_process_comms()) {
           std::stringstream ss;
@@ -124,6 +125,8 @@ void V4L2Camera::createParameters()
       RCLCPP_WARN(get_logger(), std::string{"Invalid camera info URL: "} + camera_info_url);
     }
   }
+
+  camera_frame_id_ = declare_parameter<std::string>("camera_frame_id", "camera");
 
   // Format parameters
   using ImageSize = std::vector<int64_t>;
