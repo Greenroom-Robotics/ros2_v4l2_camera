@@ -1,6 +1,6 @@
 # v4l2_camera
 
-A ROS 2 camera driver using Video4Linux2 (V4L2).
+A ROS 2 camera driver using Video4Linux2 (V4L2). This repoistory was cloned from [https://gitlab.com/boldhearts/ros2_v4l2_camera](https://gitlab.com/boldhearts/ros2_v4l2_camera)
 
 ## Installation
 [This article](https://medium.com/swlh/raspberry-pi-ros-2-camera-eef8f8b94304) details how to build and run this package. It focuses on Raspberry Pi OS with the Raspberry Pi Camera Module V2 but should generalise for most systems.
