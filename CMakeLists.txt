@@ -74,6 +74,10 @@ install(TARGETS v4l2_camera_node v4l2_camera_compose_test
   EXPORT export_${PROJECT_NAME}
   DESTINATION lib/${PROJECT_NAME})
 
+# Include launch file directory
+install(DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME})
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   set(ament_cmake_copyright_FOUND TRUE)

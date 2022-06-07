@@ -1,7 +1,8 @@
 hw_camera_v1_0_2018:
   ros__parameters:
-    input_topic: "/groundstation/sensors/joystick"
-    output_topic: "/vessel/remote_cmd/helm"
-    component: 0
-    component_index: 0
-    qos: 2
+    video_device: "/dev/video0"
+    pixel_format: "YUYV"
+    output_encoding: "rgb8"
+    image_size: [640, 480]
+
+    

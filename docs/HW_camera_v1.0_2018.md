@@ -23,36 +23,37 @@ This is an HD camera for raspberry pi
 
 ```
 
-#### Control Params                         |           |
-| Brightness (1) = 50 |           |
-| Contrast (1) = 0  |           |
-| Saturation (1) = 0  |           |
-| Red Balance (1) = 1000  |           |
-| Blue Balance (1) = 1000 |           |
-| Horizontal Flip (2) = 0 |           |
-| Vertical Flip (2) = 0 |           |
-| Power Line Frequency (3) = 1  |           |
-| Sharpness (1) = 0 |           |
-| Color Effects (3) = 0 |           |
-| Rotate (1) = 0  |           |
-| Color Effects, CbCr (1) = 32896 |           |
-| Codec Controls (6) = 0  |           |
-| Video Bitrate Mode (3) = 0  |           |
-| Video Bitrate (1) = 10000000  |           |
-| Repeat Sequence Header (2) = 0  |           |
-| H264 I-Frame Period (1) = 60  |           |
-| H264 Level (3) = 11 |           |
-| H264 Profile (3) = 4  |           |
-| Camera Controls (6) = 0 |           |
-| Auto Exposure (3) = 0 |           |
-| Exposure Time, Absolute (1) = 1000  |           |
-| Exposure, Dynamic Framerate (2) = 0 |           |
-| Auto Exposure, Bias (9) = 12  |           |
-| White Balance, Auto & Preset (3) = 1  |           |
-| Image Stabilization (2) = 0 |           |
-| ISO Sensitivity (9) = 0 |           |
-| ISO Sensitivity, Auto (3) = 1 |           |
-| Exposure, Metering Mode (3) = 0 |           |
-| Scene Mode (3) = 0  |           |
-| JPEG Compression Controls (6) = 0 |           |
-| Compression Quality (1) = 30  |           |
+#### Control Params
+| param                           | value    |
+| ------------------------------- | -------- |
+| contrast (1)                    | 0        |
+| saturation (1)                  | 0        |
+| red_balance (1)                 | 1000     |
+| blue_balance (1)                | 1000     |
+| horizontal_flip (2)             | 0        |
+| vertical_flip (2)               | 0        |
+| power_line_frequency (3)        | 1        |
+| sharpness (1)                   | 0        |
+| color_effects (3)               | 0        |
+| rotate (1)                      | 0        |
+| color_effects, CbCr (1)         | 32896    |
+| codec_controls (6)              | 0        |
+| video_bitrate_mode (3)          | 0        |
+| vdeo_bitrate (1)                | 10000000 |
+| repeat_sequence_header (2)      | 0        |
+| h264_i_frame_period (1)         | 60       |
+| h264_level (3)                  | 11       |
+| h264_profile (3)                | 4        |
+| camera_controls (6)             | 0        |
+| auto_exposure (3)               | 0        |
+| exposure_time_absolute (1)      | 1000     |
+| exposure_dynamic_framerate (2)  | 0        |
+| auto_exposure_bias (9)          | 12       |
+| white_balance_auto_&_preset (3) | 1        |
+| image_stabilization (2)         | 0        |
+| iso_sensitivity (9)             | 0        |
+| iso_snsitivity_auto (3)         | 1        |
+| exposure_metering_mode (3)      | 0        |
+| sene_mode (3)                   | 0        |
+| jpeg_cmpression_controls (6)    | 0        |
+| cmpression_quality (1)          | 30       |
