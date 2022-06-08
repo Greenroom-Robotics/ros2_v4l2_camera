@@ -20,11 +20,24 @@ This is an HD camera for raspberry pi
 
 #### Usage
 ```
+    pi_camera = Node(
+        name="hw_camera_v1_0_2018",
+        package="v4l2_camera",
+        executable="v4l2_camera_node",
+        parameters=[
+          "video_device": "/dev/video0"
+          "pixel_format": "YUYV"
+          "output_encoding": "rgb8"
+          "image_size": [640, 480]
+        ],
+        output="both",
+        arguments=["--ros-args", "--log-level", "webrtc_video:=debug"],
 
+    )
 ```
 
 #### Control Params
-| param                           | value    |
+| param                           | default  |
 | ------------------------------- | -------- |
 | contrast (1)                    | 0        |
 | saturation (1)                  | 0        |
@@ -54,6 +67,6 @@ This is an HD camera for raspberry pi
 | iso_sensitivity (9)             | 0        |
 | iso_snsitivity_auto (3)         | 1        |
 | exposure_metering_mode (3)      | 0        |
-| sene_mode (3)                   | 0        |
+| scene_mode (3)                  | 0        |
 | jpeg_cmpression_controls (6)    | 0        |
 | cmpression_quality (1)          | 30       |
