@@ -1,0 +1,8 @@
+hw_camera_v1_0_2018:
+  ros__parameters:
+    video_device: "/dev/video0"
+    pixel_format: "YUYV"
+    output_encoding: "rgb8"
+    image_size: [640, 480]
+
+    

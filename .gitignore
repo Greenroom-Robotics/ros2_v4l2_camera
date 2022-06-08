@@ -1,0 +1,12 @@
+__pycache__
+.idea
+*.raw
+*.pt
+node_modules
+dist
+yarn-error.log
+log
+build
+install
+.env
+.vscode
